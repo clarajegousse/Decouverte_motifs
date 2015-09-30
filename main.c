@@ -9,8 +9,8 @@
 #include "structures.c"
 #include "fonctions_entree_sortie.h"
 
-/* constante */
-/* #define MAX 100 */
+/* constantes */
+/* #define EXEMPLE 100 */
 
 /* programme principale */
 int main(){
