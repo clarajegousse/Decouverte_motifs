@@ -6,7 +6,7 @@
 #include <string.h>
 
 /* librairies */
-#include "structures.c
+#include "structures.c"
 #include "fonctions_entree_sortie.h"
 
 /* constante */
