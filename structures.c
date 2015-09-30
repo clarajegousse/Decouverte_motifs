@@ -3,7 +3,7 @@
 typedef struct TOccurrence TOccurrence;
 struct TOccurrence
 {
-    int pos;
+	int pos;
 	int nb_ins;
 	int nb_del;
 	int nb_sub;
