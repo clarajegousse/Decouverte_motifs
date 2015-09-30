@@ -12,7 +12,7 @@
 /* constantes */
 /* #define EXEMPLE 100 */
 
-/* programme principale */
+/* programme principal */
 int main(){
   
   	/* déclaration des variables */
