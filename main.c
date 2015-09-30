@@ -11,8 +11,8 @@
 /* programme principale */
 int main(){
   
-  /* déclaration des variables */
-  char* nom_fichier; 
+  	/* déclaration des variables */
+	char* nom_fichier; 
 	nom_fichier=(char*)malloc(sizeof(char)*101);
 	
 	printf("veuiller spécifier un fichier de séquences (format fasta)\n");
@@ -20,6 +20,6 @@ int main(){
 	printf("%s\n",nom_fichier);
 	Charger_Fichier(nom_fichier);
 	printf("fin\n");
-
-  return 0;
+	
+	return 0;
 }
