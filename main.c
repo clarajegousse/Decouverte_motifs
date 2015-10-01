@@ -16,13 +16,13 @@
 int main(){
   
   	/* déclaration des variables */
-	char* nom_fichier; 
+	char nom_fichier[100]; 
 	nom_fichier=(char*)malloc(sizeof(char)*101);
 	
 	printf("Veuillez spécifier un fichier de séquences nucléotidiques (format fasta):\n");
-	//fgets(nom_fichier,100, stdin);
+	gets(nom_fichier);
 	//printf("%s\n",nom_fichier);
-	//Charger_Fichier(nom_fichier);
+	Charger_Fichier(nom_fichier);
 
 	printf("Fin. BLABLA.\n");
 	
