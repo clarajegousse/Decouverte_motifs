@@ -24,7 +24,7 @@ int main(){
 	//printf("%s\n",nom_fichier);
 	//Charger_Fichier(nom_fichier);
 
-	printf("Fin\n");
+	printf("Fin. BLABLA.\n");
 	
 	return 0;
 }
