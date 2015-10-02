@@ -7,7 +7,11 @@
 /* fonction pour charger et ouvrir un fichier texte fasta */
 void Charger_Fichier(char* nom_fichier)
 {
+    int i = 1;
     FILE* fp;
+    char *ligne = NULL;
+    size_t len = 0;
+    ssize_t read;
 	
 	/* ouverture du fichier */
 	fp=fopen(nom_fichier, "r");
@@ -20,5 +24,20 @@ void Charger_Fichier(char* nom_fichier)
 	else
 	{
 		printf("Fichier ouvert avec succès\n");
+	}
+	
+	while ((read = getline(&ligne, &len, fp)) != -1)
+	{
+		if(ligne[0] == '>')
+		{
+			// create new sequence
+			printf("SEQUENCE %d\n", i);
+			i++;
+		}
+		if (ligne[0] != '>')
+		{
+			// printf("Retrieved line of length %zu :\n", read);
+			 printf("%s", ligne);
+		}
 	}
 }
