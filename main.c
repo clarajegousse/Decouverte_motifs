@@ -25,6 +25,7 @@ int main(){
 	Charger_Fichier(nom_fichier);
 
 	printf("Fin. BLABLA.\n");
+	printf("Check GIT GIT\n");
 	
 	return 0;
 }
