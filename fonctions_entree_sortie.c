@@ -3,6 +3,7 @@
 /* librairies standards */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* fonction pour charger et ouvrir un fichier texte fasta */
 void Charger_Fichier(char* nom_fichier)
@@ -26,6 +27,7 @@ void Charger_Fichier(char* nom_fichier)
 		printf("Fichier ouvert avec succès\n");
 	}
 	
+	/* Lecture des séquences fasta ligne par ligne */
 	while ((read = getline(&ligne, &len, fp)) != -1)
 	{
 		if(ligne[0] == '>')
@@ -34,7 +36,8 @@ void Charger_Fichier(char* nom_fichier)
 			printf("SEQUENCE %d\n", i);
 			i++;
 		}
-		if (ligne[0] != '>')
+		// if (ligne[0] != '>')
+		if ( strlen(ligne) == 71) // une ligne de sequence à 71 caractère
 		{
 			// printf("Retrieved line of length %zu :\n", read);
 			 printf("%s", ligne);
