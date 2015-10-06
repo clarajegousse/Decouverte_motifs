@@ -16,13 +16,16 @@
 int main(){
   
   	/* déclaration des variables */
+  	int nb_seq; 
 	char nom_fichier[100]; 
 	*nom_fichier=(char)malloc(sizeof(char)*101);
 	
 	printf("Veuillez spécifier un fichier de séquences nucléotidiques (format fasta):\n");
 	gets(nom_fichier);
 
-	Charger_Fichier(nom_fichier);
+	nb_seq = Charger_Fichier(nom_fichier);
+	
+	Creer_Tableau_Sequences(nb_seq, nom_fichier);
 
 	printf("Fin.\n");
 	return 0;

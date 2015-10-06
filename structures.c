@@ -1,5 +1,12 @@
 /* Définitions des structures */
 
+typedef struct TTabSeq TTabSeq;
+struct TTabSeq
+{
+	char* identifiant_seq;
+	char* sequence;
+};
+
 typedef struct TOccurrence TOccurrence;
 struct TOccurrence
 {
