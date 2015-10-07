@@ -21,7 +21,7 @@ int main(){
   	
 	FILE* fp = Ouvrir_Fichier();
 
-	//nb_seq = Compte_Nb_Seq(fp);
+	nb_seq = Compte_Nb_Seq(fp);
 	Lecture_Fichier_Sequences(fp);
 
 	/*TTabSeq* tab_seq[nb_seq];
@@ -34,7 +34,8 @@ int main(){
 
 	AfficheTTabSeq(tab_seq, nb_seq);*/
 
-
 	printf("\t===================================\n");
+	/* TODO: fermeture du fichier */
+
 	return 0;
 }

@@ -2,6 +2,8 @@
 
 char* SaisieMot();
 
+FILE* Ouvrir_Fichier();
+
 int Compte_Nb_Seq(FILE* fp);
 
 void Lecture_Fichier_Sequences(FILE* fp);
@@ -12,4 +14,3 @@ void SaisieTTabSeq(TTabSeq* tab_seq);
 
 void AfficheTTabSeq(TTabSeq** tab_seq, int nb_seq);
 
-FILE* Ouvrir_Fichier();

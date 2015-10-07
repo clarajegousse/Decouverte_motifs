@@ -49,7 +49,7 @@ FILE* Ouvrir_Fichier()
     else
     {
     	return fp;
-    } 
+    }
 }
 
 /* fonction pour charger et ouvrir un fichier texte fasta */
@@ -58,6 +58,9 @@ int Compte_Nb_Seq(FILE* fp)
 	int nb_seq = 0;
 	int nb_id =0; 
     char ligne[500]; 
+
+    /* remettre le curseur au début du fichier texte */
+    fseek(fp, 0, SEEK_SET);
 
 	/* tant qu'on est pas à la fin du fichier */
 	while( fgets(ligne, 1000, fp) != NULL)
@@ -89,6 +92,9 @@ void Lecture_Fichier_Sequences(FILE* fp)
 	int nb_seq = 0;
 	int longueur_ligne;
     char ligne[500]; /* une chaine de 500 caractères */
+
+	/* remettre le curseur au début du fichier texte */
+	fseek(fp, 0, SEEK_SET);
 
 	/* tant qu'on est pas à la fin du fichier */
 	while( !feof(fp) )
