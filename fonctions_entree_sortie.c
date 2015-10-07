@@ -5,103 +5,137 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* librairies maisons */
+/* librairies */
 #include "structures.c"
 
+char* SaisieMot()
+{
+
+	char* mot = NULL;
+	char temp[100]; // variable temporaire pour stocker la longueur du nom
+	int i = 0; // compteur
+
+	scanf("%s", temp); // lecture de chaine de caractère saisie au clavier
+
+	mot=(char*)malloc(strlen(temp)* sizeof(char)); // allocation de mémoire
+
+	if(mot==NULL)
+	{
+		printf("Erreur d'allocation de mémoire pour SaisieMot.\n");
+	}
+	else
+	{
+		for (i= 0; i<= strlen(temp); ++i)
+		{
+			mot[i] = temp[i];
+		}
+	}
+	return mot; // On retourne le pointeur qui nous dirige vers la premiere lettre du mot 
+}
+
+FILE* Ouvrir_Fichier()
+{
+	char* nom_fichier;
+	FILE* fp;
+
+	puts("Veuillez spécifier un fichier de séquences nucléotidiques (format fasta):");
+	nom_fichier=SaisieMot();
+
+    if((fp = fopen(nom_fichier, "r")) == NULL)
+    {
+    	puts("Erreur d'ouverture du fichier: fichier inexistant ou droits insuffisants.");
+    	exit(1);
+    }
+    else
+    {
+    	return fp;
+    } 
+}
+
 /* fonction pour charger et ouvrir un fichier texte fasta */
-int Charger_Fichier(char* nom_fichier)
+int Compte_Nb_Seq(FILE* fp)
 {
-	int i;
-    FILE* fp;
-    char *ligne = NULL;
-    size_t len = 0;
-    ssize_t read;
-	
-	/* ouverture du fichier */
-	fp=fopen(nom_fichier, "r");
-	
-	/* gestion d'erreur d'ouverture du fichier */
-	if(fp==NULL)
-	{
-		printf("erreur lors de l'ouverture du fichier spécifié");
-	}
-	else
-	{
-		printf("Fichier ouvert avec succès\n");
-	}
-	
-	/* Lecture des séquences fasta ligne par ligne */
-	while ((read = getline(&ligne, &len, fp)) != -1)
+	int nb_seq = 0;
+	int nb_id =0; 
+    char ligne[500]; 
+
+	/* tant qu'on est pas à la fin du fichier */
+	while( fgets(ligne, 1000, fp) != NULL)
 	{
 		if(ligne[0] == '>')
 		{
-			//printf("SEQUENCE %d\n", i);
-			i++;
+			nb_id++;
 		}
-		if (ligne[0] != '>')
-		//if ( strlen(ligne) == 71) // une ligne de sequence à 71 caractère
+		else
 		{
-			// printf("Retrieved line of length %zu :\n", read);
-			//printf("%s", ligne);
+			if(ligne[0] == 'A' || ligne[0] == 'T' || ligne[0] == 'T' || ligne[0] == 'C')
+    		{
+    			nb_seq++;
+    		}
 		}
+	}	
+
+	if( nb_id != nb_seq )
+	{
+		puts("Le nombre d'identifiant ne correcpond pas au nombre de sequences.\n Veuillez verifier le format de la liste de séquences.");
+		exit(1);
 	}
-	return i;
+    return nb_seq;
 }
 
-void Creer_Tableau_Sequences(int nb_seq, char* nom_fichier)
+/* fonction pour charger et ouvrir un fichier texte fasta */
+void Lecture_Fichier_Sequences(FILE* fp)
 {
-	int i = 0;
-    FILE* fp;
-    char *ligne = NULL;
-    char* anc_ligne = NULL; // buffer
-    size_t len = 0;
-    ssize_t read;
-    int long_ligne = 0; // longueur de la sequence lue ligne par ligne
-    TTabSeq sequences_fichier[nb_seq];
-	
-	/* ouverture du fichier */
-	fp=fopen(nom_fichier, "r");
-	
-	/* gestion d'erreur d'ouverture du fichier */
-	if(fp==NULL)
+	int nb_seq = 0;
+	int longueur_ligne;
+    char ligne[500]; /* une chaine de 500 caractères */
+
+	/* tant qu'on est pas à la fin du fichier */
+	while( !feof(fp) )
 	{
-		printf("erreur lors de l'ouverture du fichier spécifié");
+		fgets(ligne, 1000, fp); /* on lit la ligne */
+ 
+    	longueur_ligne = strlen(ligne); /* on récupère la longueur de la ligne */
+    	
+    	if(ligne[longueur_ligne-1] == '\n') /* si le retour chariot est le dernier caractère */
+    	{
+    		ligne[longueur_ligne-1] = '\0'; /* on le remplace par le symbole de fin de chaine */
+    	}
+    	printf("%s\n", ligne);
+	}
+    
+}
+
+TTabSeq* AlloueTTabSeq()
+{
+	TTabSeq* tab_seq = (TTabSeq*)malloc(sizeof(TTabSeq));
+	if(tab_seq == NULL)
+	{
+		printf("Erreur d'allocation de mémoire de AlloueTTabSeq !!\n");
 	}
 	else
 	{
-		//printf("Fichier ouvert avec succès\n");
+		tab_seq->sequence=NULL;
+		tab_seq->identifiant_seq=NULL;
 	}
+	return tab_seq;
+}
 
-	while ((read = getline(&ligne, &len, fp)) != -1)
+void SaisieTTabSeq(TTabSeq* tab_seq)
+{
+	puts("Saisir identifiant:");
+	tab_seq->identifiant_seq = SaisieMot();
+	puts("Saisir séquence:");
+	tab_seq->sequence = SaisieMot();
+}
+
+void AfficheTTabSeq(TTabSeq** tab_seq, int nb_seq)
+{
+	for (int i = 0; i < nb_seq; ++i)
 	{
-		if(ligne[0] == '>')
-		{
-			//printf("SEQUENCE %d\n", i);
-			//printf("Longueur ligne %lu\n", strlen(ligne));
-
-			sequences_fichier[i].identifiant_seq = (char*)malloc((strlen(ligne))*sizeof(char)); // +1 pour caractère de fin de ligne
-			sequences_fichier[i].identifiant_seq = ligne;
-			printf("%s\n", sequences_fichier[i].identifiant_seq);
-
-			i++;
-		}
-		if (ligne[0] != '>') // une ligne de sequence à 71 caractère
-		{
-			//printf("Retrieved line of length %zu :\n", read);
-			//printf("%s", ligne);
-		
-			long_ligne = long_ligne + strlen(ligne);
-			anc_ligne = (char*)malloc((long_ligne)*sizeof(char));
-			
-			if(anc_ligne == NULL)
-			{
-				anc_ligne = ligne;
-			}
-			else
-			{
-				anc_ligne = strcat(anc_ligne, ligne);
-			}
-			printf("%s\n", anc_ligne);
-		}
+		printf(">%s \n", tab_seq[i]->identifiant_seq);
+		printf("%s\n", tab_seq[i]->sequence);
 	}
 }
+
+

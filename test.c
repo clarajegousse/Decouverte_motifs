@@ -19,7 +19,8 @@ void SaisieTTabSeq(TTabSeq* tab_seq);
 void AfficheTTabSeq(TTabSeq** tab_seq, int nb_seq);
 
 /* programme principal */
-int main(){
+int main()
+{
   
   	/* déclaration des variables */
   	int nb_seq = 4; 
@@ -38,24 +39,26 @@ int main(){
 	return 0;
 }
 
-char* SaisieMot(){
-	
-	char* mot=NULL;
+char* SaisieMot()
+{
+
+	char* mot = NULL;
 	char temp[100]; // variable temporaire pour stocker la longueur du nom
-	int NB_MAX_ELEM=0; // on définit un nombre maximal d'éléments pour le tableau
-	int i=0; // compteur
+	int i = 0; // compteur
 
-	scanf("%s", temp);
-	NB_MAX_ELEM=strlen(temp); /* on trouve la longueur de la chaine de caractères */
+	scanf("%s", temp); // lecture de chaine de caractère saisie au clavier
 
-	mot=(char*)malloc(NB_MAX_ELEM* sizeof(char));
+	mot=(char*)malloc(strlen(temp)* sizeof(char)); // allocation de mémoire
 
-	if(mot==NULL){
+	if(mot==NULL)
+	{
 		printf("Erreur d'allocation de mémoire pour SaisieMot.\n");
 	}
-	else{
-		for (i= 0; i<= NB_MAX_ELEM; ++i){
-			mot[i]=temp[i];
+	else
+	{
+		for (i= 0; i<= strlen(temp); ++i)
+		{
+			mot[i] = temp[i];
 		}
 	}
 	return mot; // On retourne le pointeur qui nous dirige vers la premiere lettre du mot 
@@ -64,10 +67,12 @@ char* SaisieMot(){
 TTabSeq* AlloueTTabSeq()
 {
 	TTabSeq* tab_seq = (TTabSeq*)malloc(sizeof(TTabSeq));
-	if(tab_seq == NULL){
+	if(tab_seq == NULL)
+	{
 		printf("Erreur d'allocation de mémoire de AlloueTTabSeq !!\n");
 	}
-	else{
+	else
+	{
 		tab_seq->sequence=NULL;
 		tab_seq->identifiant_seq=NULL;
 	}

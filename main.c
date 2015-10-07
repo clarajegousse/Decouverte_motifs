@@ -10,23 +10,31 @@
 #include "fonctions_entree_sortie.h"
 
 /* constantes */
-/* #define EXEMPLE 100 */
+//#define nom_fichier "sequences.fasta"
 
 /* programme principal */
 int main(){
   
   	/* déclaration des variables */
+  	int i;
   	int nb_seq; 
-	char nom_fichier[100]; 
-	*nom_fichier=(char)malloc(sizeof(char)*101);
-	
-	printf("Veuillez spécifier un fichier de séquences nucléotidiques (format fasta):\n");
-	gets(nom_fichier);
+  	
+	FILE* fp = Ouvrir_Fichier();
 
-	nb_seq = Charger_Fichier(nom_fichier);
-	
-	Creer_Tableau_Sequences(nb_seq, nom_fichier);
+	//nb_seq = Compte_Nb_Seq(fp);
+	Lecture_Fichier_Sequences(fp);
 
-	printf("Fin.\n");
+	/*TTabSeq* tab_seq[nb_seq];
+	
+	for (i = 0; i < nb_seq; i++)
+	{
+		tab_seq[i] = AlloueTTabSeq();
+		SaisieTTabSeq(tab_seq[i]);
+	}
+
+	AfficheTTabSeq(tab_seq, nb_seq);*/
+
+
+	printf("\t===================================\n");
 	return 0;
 }
