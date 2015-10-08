@@ -33,6 +33,27 @@ char* SaisieMot()
 	return mot; // On retourne le pointeur qui nous dirige vers la premiere lettre du mot 
 }
 
+char* Recuperer_ligne(char* ligne)
+{
+	char* mot = NULL;
+	int i = 0;
+	
+	mot=(char*)malloc(strlen(ligne)* sizeof(char)); // allocation de mémoire
+	
+	if(mot==NULL)
+	{
+		printf("Erreur d'allocation de mémoire pour SaisieMot.\n");
+	}
+	else
+	{
+		for (i= 0; i<= strlen(ligne); ++i)
+		{
+			mot[i] = ligne[i];
+		}
+	}
+	return mot; // On retourne le pointeur qui nous dirige vers la premiere lettre du mot
+}
+
 FILE* Ouvrir_Fichier()
 {
 	char* nom_fichier;
@@ -71,7 +92,7 @@ int Compte_Nb_Seq(FILE* fp)
 		}
 		else
 		{
-			if(ligne[0] == 'A' || ligne[0] == 'T' || ligne[0] == 'T' || ligne[0] == 'C')
+			if(ligne[0] == 'A' || ligne[0] == 'T' || ligne[0] == 'G' || ligne[0] == 'C')
     		{
     			nb_seq++;
     		}
@@ -87,11 +108,11 @@ int Compte_Nb_Seq(FILE* fp)
 }
 
 /* fonction pour charger et ouvrir un fichier texte fasta */
-void Lecture_Fichier_Sequences(FILE* fp)
+void Lecture_Fichier_Sequences(FILE* fp, TTabSeq** tab_seq)
 {
 	int nb_seq = 0;
 	int longueur_ligne;
-    char ligne[500]; /* une chaine de 500 caractères */
+    	char ligne[500]; /* une chaine de 500 caractères */
 
 	/* remettre le curseur au début du fichier texte */
 	fseek(fp, 0, SEEK_SET);
@@ -101,13 +122,22 @@ void Lecture_Fichier_Sequences(FILE* fp)
 	{
 		fgets(ligne, 1000, fp); /* on lit la ligne */
  
-    	longueur_ligne = strlen(ligne); /* on récupère la longueur de la ligne */
+    		longueur_ligne = strlen(ligne); /* on récupère la longueur de la ligne */
     	
-    	if(ligne[longueur_ligne-1] == '\n') /* si le retour chariot est le dernier caractère */
-    	{
-    		ligne[longueur_ligne-1] = '\0'; /* on le remplace par le symbole de fin de chaine */
-    	}
-    	printf("%s\n", ligne);
+    		if(ligne[longueur_ligne-1] == '\n') /* si le retour chariot est le dernier caractère */
+    		{
+    			ligne[longueur_ligne-1] = '\0'; /* on le remplace par le symbole de fin de chaine */
+    		}
+    		printf("%s\n", ligne);
+    		if(ligne[0]=='>') /*Si la ligne debute par '>' on est sur un identifiant que l'on doit recupérer */
+		{
+			tab_seq[nb_seq]->identifiant_seq=Recuperer_ligne(ligne); /* on introduit l'identifiant correspondant a la sequence courante */
+		}
+		else
+		{
+			tab_seq[nb_seq]->sequence=Recuperer_ligne(ligne); /* On introduit la séquence courrante */
+			nb_seq++; /* On incrémente le compteur pour passer à la séquence suivante */
+		}
 	}
     
 }
@@ -127,13 +157,6 @@ TTabSeq* AlloueTTabSeq()
 	return tab_seq;
 }
 
-void SaisieTTabSeq(TTabSeq* tab_seq)
-{
-	puts("Saisir identifiant:");
-	tab_seq->identifiant_seq = SaisieMot();
-	puts("Saisir séquence:");
-	tab_seq->sequence = SaisieMot();
-}
 
 void AfficheTTabSeq(TTabSeq** tab_seq, int nb_seq)
 {
