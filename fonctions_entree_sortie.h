@@ -2,15 +2,14 @@
 
 char* SaisieMot();
 
+char* Recuperer_ligne(char* ligne);
 FILE* Ouvrir_Fichier();
 
 int Compte_Nb_Seq(FILE* fp);
 
-void Lecture_Fichier_Sequences(FILE* fp);
+void Lecture_Fichier_Sequences(FILE* fp, TTabSeq** tab_seq);
 
 TTabSeq* AlloueTTabSeq();
-
-void SaisieTTabSeq(TTabSeq* tab_seq);
 
 void AfficheTTabSeq(TTabSeq** tab_seq, int nb_seq);
 
