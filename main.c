@@ -22,17 +22,17 @@ int main(){
 	FILE* fp = Ouvrir_Fichier();
 
 	nb_seq = Compte_Nb_Seq(fp);
-	Lecture_Fichier_Sequences(fp);
+	
 
-	/*TTabSeq* tab_seq[nb_seq];
+	TTabSeq* tab_seq[nb_seq];
 	
 	for (i = 0; i < nb_seq; i++)
 	{
 		tab_seq[i] = AlloueTTabSeq();
-		SaisieTTabSeq(tab_seq[i]);
 	}
-
-	AfficheTTabSeq(tab_seq, nb_seq);*/
+	
+	Lecture_Fichier_Sequences(fp, tab_seq);
+	AfficheTTabSeq(tab_seq, nb_seq);
 
 	printf("\t===================================\n");
 	/* TODO: fermeture du fichier */
