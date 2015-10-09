@@ -183,11 +183,11 @@ TDict* AlloueTDict()
 	return dict_t1;
 }
 
-void Creer_Dictionnaire_T1(TTabSeq** tab_seq, TDict* dict_t1, int nb_seq)
+/*void Creer_Dictionnaire_T1(TTabSeq** tab_seq, TDict* dict_t1, int nb_seq)
 {
 	int i;
 	for(i=0;i<=nb_seq;i++)
 	{
 		
 	}
-}
+}*/
