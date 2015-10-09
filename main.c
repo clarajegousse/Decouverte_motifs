@@ -33,6 +33,8 @@ int main(){
 	
 	Lecture_Fichier_Sequences(fp, tab_seq);
 	AfficheTTabSeq(tab_seq, nb_seq);
+	
+	TDict* dict_t1 = AlloueTDict();
 
 	printf("\t===================================\n");
 	/* TODO: fermeture du fichier */
