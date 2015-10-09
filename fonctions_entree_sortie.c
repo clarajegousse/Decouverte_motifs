@@ -167,4 +167,27 @@ void AfficheTTabSeq(TTabSeq** tab_seq, int nb_seq)
 	}
 }
 
+TDict* AlloueTDict()
+{
+	TDict* dict_t1 = (TDict*)malloc(sizeof(TDict));
+	if(dict_t1 == NULL)
+	{
+		printf("Erreur d'allocation de mémoire de AlloueTTabSeq !!\n");
+	}
+	else
+	{
+		dict_t1->motif=NULL;
+		dict_t1->next=NULL;
+		dict_t1->prem_seq=NULL;
+	}
+	return dict_t1;
+}
 
+void Creer_Dictionnaire_T1(TTabSeq** tab_seq, TDict* dict_t1, int nb_seq)
+{
+	int i;
+	for(i=0;i<=nb_seq;i++)
+	{
+		
+	}
+}
