@@ -13,3 +13,5 @@ TTabSeq* AlloueTTabSeq();
 
 void AfficheTTabSeq(TTabSeq** tab_seq, int nb_seq);
 
+TDict* AlloueTDict();
+
