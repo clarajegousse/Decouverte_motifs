@@ -54,6 +54,23 @@ char* Recuperer_ligne(char* ligne)
 	return mot; // On retourne le pointeur qui nous dirige vers la premiere lettre du mot
 }
 
+char* Recuperer_char(char carac)
+{
+	char* caract_voulu = NULL;
+	
+	caract_voulu=(char*)malloc(2*sizeof(char)); // allocation de mémoire
+	
+	if(caract_voulu==NULL)
+	{
+		printf("Erreur d'allocation de mémoire pour SaisieMot.\n");
+	}
+	else
+	{
+		caract_voulu[0]=carac;
+	}
+	return caract_voulu; // On retourne le pointeur qui nous dirige vers la premiere lettre du mot
+}
+
 FILE* Ouvrir_Fichier()
 {
 	char* nom_fichier;
@@ -183,11 +200,111 @@ TDict* AlloueTDict()
 	return dict_t1;
 }
 
-/*void Creer_Dictionnaire_T1(TTabSeq** tab_seq, TDict* dict_t1, int nb_seq)
+TSequence* AlloueTSequence()
 {
-	int i;
-	for(i=0;i<=nb_seq;i++)
+	TSequence* seq = (TSequence*)malloc(sizeof(TSequence));
+	if(seq == NULL)
 	{
-		
+		printf("Erreur d'allocation de mémoire de AlloueTTabSeq !!\n");
 	}
-}*/
+	else
+	{
+		seq->num_seq=0;
+		seq->next=NULL;
+		seq->prem_occ=NULL;
+	}
+	return seq;
+}
+
+TOccurrence* AlloueTOccurrence()
+{
+	TOccurrence* occ = (TOccurrence*)malloc(sizeof(TOccurrence));
+	if(occ == NULL)
+	{
+		printf("Erreur d'allocation de mémoire de AlloueTTabSeq !!\n");
+	}
+	else
+	{
+		occ->pos=0;
+		occ->nb_ins=0;
+		occ->nb_del=0;
+		occ->nb_sub=0;
+		occ->last=0;
+		occ->next=NULL;
+	}
+	return occ;
+}
+
+
+void Creer_Dictionnaire_T1(TTabSeq** tab_seq, TDict* dict_t1, int nb_seq)
+{
+	puts("creation des variables");
+	int i;
+	int j;
+	int long_seq;
+	char* motif;
+	TDict* prec_dict = AlloueTDict();
+	TDict* new_motif = AlloueTDict();
+	puts("variables cree avec succes");
+	puts("on va maintenant parcourir toute les sequences");
+	for(i=0;i<nb_seq;i++)
+	{
+		puts("on calcul la taille de la sequence courante");
+		long_seq=strlen(tab_seq[i]->sequence); /* On récupère la longueur de la sequence */
+		puts("on parcours la sequence caractère par caractère");
+		for(j=0;j<long_seq;j++)
+		{
+			prec_dict = NULL;
+			new_motif = dict_t1;
+			motif = Recuperer_char(tab_seq[i]->sequence[j]);
+			printf("le motif est : %c\n", motif[0]);
+			if(new_motif->prem_seq==NULL) /* Si le dictionnaire est vide */
+			{
+				new_motif->motif = Recuperer_char(tab_seq[i]->sequence[j]);
+				printf("le motif est : %c\n", new_motif->motif[0]);
+				new_motif->nb_seq_quorum++;
+				new_motif->prem_seq = AlloueTSequence();
+				new_motif->prem_seq->num_seq = i;
+				new_motif->prem_seq->prem_occ = AlloueTOccurrence();
+				new_motif->prem_seq->prem_occ->pos = j;
+				puts("on a rempli la premier motif dans le dictionnaire on passe au nucleotide suivant");
+				continue;
+				//printf("%c\n", tab_seq[i]->sequence[j]);
+			}
+			while((new_motif != NULL) && (strcmp(new_motif->motif, motif) < 0))
+			{
+				puts("on parcours la liste et le motif courant est plus grand que le motif de la brique");
+				prec_dict = new_motif;
+				new_motif = new_motif->next;
+			}
+			if(new_motif == NULL)
+			{
+				puts("on est arrive a la fin du dictionnaire de motif");
+				printf("le motif precedent est : %c\n", prec_dict->motif[0]);
+				puts("on cree une nouvelle brique");
+				puts("nouvelle brique cree");
+				puts("on fait pointer la precedente brique vers la nouvelle");
+				prec_dict->next = new_motif;
+				puts("branchement effectue");
+				puts("on introduit le nouveau motif dans la brique");
+				new_motif->motif = Recuperer_char(tab_seq[i]->sequence[j]);
+				puts("la nouvelle brique contient maintenant un nouveau motif");
+				printf("le motif insere est : %c\n", new_motif->motif[0]);
+				new_motif->nb_seq_quorum++;
+				new_motif->prem_seq = AlloueTSequence();
+				new_motif->prem_seq->num_seq = i;
+				new_motif->prem_seq->prem_occ = AlloueTOccurrence();
+				new_motif->prem_seq->prem_occ->pos = j;
+				continue;
+			}
+			if(strcmp(new_motif->motif, motif) > 0)
+			{
+				puts("on a trouvé un motif qui est entre deux briques existantes ");
+			}
+			printf("le motif precedent est : %c\n", prec_dict->motif[0]);
+			
+		}
+		puts("on a finit de parcourir la sequence, on passe a la suivante");
+	}
+	puts("on a finit de parcourir toute les sequences, on sort de la fonction");
+}
