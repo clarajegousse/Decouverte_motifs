@@ -1,5 +1,6 @@
 /* Définitions des structures */
 
+/* Dictionnaire des séquences qui étaient dans le fichier */
 typedef struct TTabSeq TTabSeq;
 struct TTabSeq
 {
@@ -7,6 +8,7 @@ struct TTabSeq
 	char* sequence;
 };
 
+/* dictionnaire des occurences d'un motif */
 typedef struct TOccurrence TOccurrence;
 struct TOccurrence
 {
@@ -19,6 +21,7 @@ struct TOccurrence
 };
 /*typedef TOccurrence* TPointer*/
 
+
 typedef struct TSequence TSequence;
 struct TSequence
 {
@@ -28,12 +31,13 @@ struct TSequence
 };
 /*typedef TSequence* TPointer*/
 
-typedef struct TDict TDict;
-struct TDict
+/* dictionaire des motifs */
+typedef struct TMotif TMotif;
+struct TMotif
 {
-	char* motif;
-	int nb_seq;
-	struct TDict* next;
-	struct TSequence* prem_seq;
+	char* motif; /* le motif lui même "ATGC" */
+	int nb_seq_quorum; /* le nombre de séquence possèdant le motif, permettant de calculer le quorum */
+	struct TSequence* prem_seq; /* pointeur vers la première séquence trouvée possédant le motif */
+	struct TMotif* next; /* pointeur vers le motif suivant */
 };
-/*typedef TDict* TPointer*/
+/*typedef TMotif* TPointer*/

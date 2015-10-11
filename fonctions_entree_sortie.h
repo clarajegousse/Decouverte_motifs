@@ -1,10 +1,10 @@
 /* Prototypes des fonctions de gestion d'entrée et de sortie */
 
-char* SaisieMot();
+char* Saisie_Mot();
 
-char* Recuperer_ligne(char* ligne);
+char* Recuperer_Ligne(char* ligne);
 
-char* Recuperer_char(char carac);
+char* Recuperer_Char(char carac);
 
 FILE* Ouvrir_Fichier();
 
@@ -12,15 +12,23 @@ int Compte_Nb_Seq(FILE* fp);
 
 void Lecture_Fichier_Sequences(FILE* fp, TTabSeq** tab_seq);
 
-TTabSeq* AlloueTTabSeq();
+TTabSeq* Alloue_TTabSeq();
 
-void AfficheTTabSeq(TTabSeq** tab_seq, int nb_seq);
+void Affiche_TTabSeq(TTabSeq** tab_seq, int nb_seq);
 
-TDict* AlloueTDict();
+TMotif* Alloue_TMotif();
 
-TSequence* AlloueTSequence();
+TSequence* Alloue_TSequence();
 
-TOccurrence* AlloueTOccurrence();
+TOccurrence* Alloue_TOccurrence();
 
-void Creer_Dictionnaire_T1(TTabSeq** tab_seq, TDict* dict_t1, int nb_seq);
+void Affiche_Un_Motif(TMotif* m);
+
+TMotif* Creer_Un_Motif_T1(char c, int longueur_motif);
+
+void Affiche_Dictionnaire_Motifs(TMotif* tete_motif);
+
+void Creer_Dictionnaire_Motifs_T1(TTabSeq** tab_seq, int nb_seq);
+
+
 
