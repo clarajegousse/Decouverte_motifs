@@ -68,6 +68,10 @@ char* Recuperer_Char(char carac)
 	{
 		caract_voulu[0]=carac;
 	}
+	if(caract_voulu[1])
+	{
+		caract_voulu[1] = '\0';
+	}
 	return caract_voulu; // On retourne le pointeur qui nous dirige vers la premiere lettre du mot
 }
 
@@ -177,7 +181,8 @@ TTabSeq* Alloue_TTabSeq()
 
 void Affiche_TTabSeq(TTabSeq** tab_seq, int nb_seq)
 {
-	for (int i = 0; i < nb_seq; ++i)
+	int i;
+	for (i = 0; i < nb_seq; ++i)
 	{
 		printf("%s \n", tab_seq[i]->identifiant_seq);
 		printf("%s\n", tab_seq[i]->sequence);
@@ -246,6 +251,7 @@ void Affiche_Dictionnaire_Motifs(TMotif* tete_motif)
 		printf("motif: %s ;\tnb_seq_quorum: %d.\n", motif_courant->motif, motif_courant->nb_seq_quorum);
 		motif_courant = motif_courant->next;
 	}
+	printf("motif: %s ;\tnb_seq_quorum: %d.\n", motif_courant->motif, motif_courant->nb_seq_quorum);
 }
 
 TMotif* Creer_Un_Motif_T1(char* chaine, int longueur_motif) 
@@ -257,10 +263,14 @@ TMotif* Creer_Un_Motif_T1(char* chaine, int longueur_motif)
 	nouveau_motif->motif = (char*)malloc(sizeof(char)*longueur_motif);
 	
 	/* on copie le motif */
-	strcpy(nouveau_motif->motif, "");
-	strcpy(nouveau_motif->motif, &buffer);
+	if(longueur_motif == 1)
+	{
+			strcpy(nouveau_motif->motif, "");
+	}
+	strcat(nouveau_motif->motif, chaine);
+	printf("Le motif inseré est : %s\n", nouveau_motif->motif);
 
-	nouveau_motif->nb_seq_quorum++;
+	nouveau_motif->nb_seq_quorum = 0;
 	nouveau_motif->next = NULL;
 
 	return nouveau_motif;
@@ -274,45 +284,59 @@ void Creer_Dictionnaire_Motifs_T1(TTabSeq** tab_seq, int nb_seq)
 	int longueur_motif = 1; /* cas des motifs de taille 1 */
 	int longueur_seq;
 
-	TMotif* tete_motif; /* on déclare une tête de liste */
-	TMotif* motif_courant; /* on déclare le motif courant */
+	char* base_courante;
 
-	TMotif* nouveau_motif; /* on déclare un nouveau motif */
-
+	TMotif* tete_motif = Alloue_TMotif();/* on déclare une tête de liste */
+	tete_motif = NULL;
+	TMotif* motif_courant = Alloue_TMotif(); /* on déclare le motif courant */
+	motif_courant = NULL;
+	TMotif* nouveau_motif = Alloue_TMotif(); /* on déclare un nouveau motif */
+	nouveau_motif = NULL;
 	for (i = 0; i < nb_seq; i++)
 	{
 		/* on trouve la longueur de la sequence i */
 		longueur_seq = strlen(tab_seq[i]->sequence);
+		printf("la longueur de la sequence courante est : %d\n", longueur_seq);
 
 		/* pour tout les bases j de la sequences */
 		for (j = 0; j < longueur_seq; j++)
 		{
+			base_courante = Recuperer_Char(tab_seq[i]->sequence[j]);
+			printf("la base courante est : %s\n", base_courante);
+			printf("on travaille sur la position %d de la sequence courante\n", j);
 			/* s'il n'y a pas de motif dans le dictionaire */
 			if (tete_motif == NULL)
 			{
+				puts("Il n'y a pas de motif dans le dictionnaire");
 				/* on crée le premier motif de la liste : la tête de liste */
-				tete_motif = Creer_Un_Motif_T1(&tab_seq[i]->sequence[j], longueur_motif);
+				tete_motif = Creer_Un_Motif_T1(base_courante, longueur_motif);
+				continue;
 			}
-			else
+			/* on commence par la tete de la liste */
+			motif_courant = tete_motif;
+			
+			/* TODO: ajouter motif seulement s'il n'est pas déjà dans la liste */
+			
+			/* tant qu'on est pas à la fin de la liste */
+			while (( motif_courant->next != NULL ) && (strcmp(motif_courant->motif, base_courante) != 0))
 			{
-				/* on commence par la tete de la liste */
-				motif_courant = tete_motif;
+				/* on avance dans la liste */
+				motif_courant = motif_courant->next;
+			} /* quand on arrive à la fin de la liste */
+			if(strcmp(motif_courant->motif, base_courante) == 0) /*Si on est tombé sur un motif qui est deja dans le dictionnaire*/
+			{
+				puts("le motif est deja inseré dans le dictionnaire");
+				continue;
 				
-				/* TODO: ajouter motif seulement s'il n'est pas déjà dans la liste */
-				
-				/* tant qu'on est pas à la fin de la liste */
-				while ( motif_courant->next != NULL )
-				{
-					/* on avance dans la liste */
-					motif_courant = motif_courant->next;
-				} /* quand on arrive à la fin de la liste */
-
-				/* on crée un nouveau motif */
-				nouveau_motif = Creer_Un_Motif_T1(&tab_seq[i]->sequence[j], longueur_motif);
-
-				/* on crée le lien entre le motif courant et le nouveau motif */
-				motif_courant->next = nouveau_motif;	
+				/* TODO : Inserer la nouvelle sequence si elle n'existe pas et dans tout les cas la nouvelle occurrence */
 			}
+
+			/* on crée un nouveau motif */
+			puts("Le motif n'existe pas donc on le crée");
+			nouveau_motif = Creer_Un_Motif_T1(base_courante, longueur_motif);
+
+			/* on crée le lien entre le motif courant et le nouveau motif */
+			motif_courant->next = nouveau_motif;	
 		}
 	}
 	Affiche_Dictionnaire_Motifs(tete_motif);
