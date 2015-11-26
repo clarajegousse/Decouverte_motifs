@@ -39,8 +39,7 @@ int main()
 	puts("veuillez préciser la taille maximale du motif");
 	scanf("%d", &l_max);
 	puts("Selectionnez le quorum désiré (doit etre compris entre 0 et 100)");
-	scanf("%d", &quorum);
-	quorum = quorum/100;
+	scanf("%f", &quorum);
 	//Creer_Dictionnaire_Motifs(dict_t1, tab_seq, nb_seq);
 	//Creer_Dictionnaire_Motif_vide(&dict_vide.tete_motif, tab_seq, nb_seq, nb_erreurs);
 	Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del( tab_seq, nb_seq, l_max, nb_erreurs, quorum);
