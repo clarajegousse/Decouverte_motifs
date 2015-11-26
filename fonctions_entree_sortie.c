@@ -940,6 +940,13 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 			}
 			motif_lu = motif_lu->next;
 		}
+				
+		/* Destruction du dictionnaire de taille i-1 */
+		
+		Destruction_dictionnaire(&dict_courant.tete_motif);
+		dict_courant.tete_motif = dict_a_construire.tete_motif;
+		dict_a_construire.tete_motif = NULL;
+		
 		/* On regarde pour chaque motif si la contrainte du quorum est respectée, si ce n'est pas le cas, les occurrences, séquences et ce motif sont supprimés du dictionnaire */
 		//puts("Verification de la contrainte du quorum");
 		motif_lu = dict_courant.tete_motif;
@@ -962,12 +969,7 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 			}
 			ancien_motif = motif_lu;
 			motif_lu = motif_lu->next;
-		}		
-		/* Destruction du dictionnaire de taille i-1 */
-		
-		Destruction_dictionnaire(&dict_courant.tete_motif);
-		dict_courant.tete_motif = dict_a_construire.tete_motif;
-		dict_a_construire.tete_motif = NULL;
+		}
 	}
 	motif_a_afficher = dict_courant.tete_motif;
 	while(motif_a_afficher != NULL)
