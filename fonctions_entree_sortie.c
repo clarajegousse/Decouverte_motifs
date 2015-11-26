@@ -699,7 +699,8 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 	
 	/* Déclaration des variables */
 	
-	int i,k,l, cpt;
+	int i,k,l;
+	int cpt;
 	int pos_car_droite;
 	int nb_erreurs_actuel;
 	int nb_max_insertion;
@@ -940,7 +941,7 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 			}
 			motif_lu = motif_lu->next;
 		}
-				
+		
 		/* Destruction du dictionnaire de taille i-1 */
 		
 		Destruction_dictionnaire(&dict_courant.tete_motif);
@@ -954,8 +955,10 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 		cpt = 0;
 		while(motif_lu != NULL)
 		{
+			printf("quorum examiné : %f\n", motif_lu->nb_seq_quorum/nb_seq);
 			if((motif_lu->nb_seq_quorum/nb_seq) < quorum)
 			{
+				puts("le motif est a supprimer");
 				ancien_motif->next = motif_lu->next;
 				motif_a_supprimer = motif_lu;
 				if( cpt == 0)
@@ -967,9 +970,12 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 				free(motif_a_supprimer);
 				continue;
 			}
+			puts("on garde le motif");
 			ancien_motif = motif_lu;
 			motif_lu = motif_lu->next;
-		}
+			cpt++;
+		}		
+		
 	}
 	motif_a_afficher = dict_courant.tete_motif;
 	while(motif_a_afficher != NULL)
