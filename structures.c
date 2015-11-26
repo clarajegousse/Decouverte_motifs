@@ -19,7 +19,7 @@ struct TOccurrence
 	int last;
 	struct TOccurrence* next;
 };
-/*typedef TOccurrence* TPointer*/
+typedef TOccurrence* TPOccurrence;
 
 
 typedef struct TSequence TSequence;
@@ -27,17 +27,28 @@ struct TSequence
 {
 	int num_seq;
 	struct TSequence* next;
-	struct TOccurrence* prem_occ;
+	struct TOccurrence* tete_occ;
 };
-/*typedef TSequence* TPointer*/
+typedef TSequence* TPSequence;
 
 /* dictionaire des motifs */
 typedef struct TMotif TMotif;
 struct TMotif
 {
 	char* motif; /* le motif lui même "ATGC" */
-	int nb_seq_quorum; /* le nombre de séquence possèdant le motif, permettant de calculer le quorum */
-	struct TSequence* prem_seq; /* pointeur vers la première séquence trouvée possédant le motif */
+	float nb_seq_quorum; /* le nombre de séquence possèdant le motif, permettant de calculer le quorum */
+	struct TSequence* tete_seq; /* pointeur vers la première séquence trouvée possédant le motif */
 	struct TMotif* next; /* pointeur vers le motif suivant */
 };
-/*typedef TMotif* TPointer*/
+typedef TMotif* TPMotif;
+
+typedef struct TDict TDict;
+struct TDict 
+{
+	struct TMotif* tete_motif;
+};
+typedef TDict* TPDict;
+
+typedef int* TPInt ;
+
+typedef bool* TPbool ;
