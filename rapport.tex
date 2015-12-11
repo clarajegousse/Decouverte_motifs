@@ -1,0 +1,150 @@
+% DOCUMENT CLASS
+\documentclass[11pt, oneside]{article}
+\usepackage{geometry}                	
+\geometry{a4paper}
+
+% SET SANS SERIF FONT
+\renewcommand{\familydefault}{\sfdefault}
+\renewcommand*\sfdefault{phv}
+
+% FONTS PACKAGES
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{courier}
+
+% SKIP LINES BETWEEN PARAGRAPHS
+\usepackage[parfill]{parskip}
+
+% COLOR SETTINGS
+\usepackage[usenames,dvipsnames]{xcolor}
+% SET COLOR PALETTE (flattastic color palette BY erigon)
+\definecolor{grapefruit}{HTML}{ED5565}
+\definecolor{Grapefruit}{HTML}{DA4453}
+\definecolor{bittersweet}{HTML}{FC6E51}
+\definecolor{Bittersweet}{HTML}{E9573F}
+\definecolor{sunflower}{HTML}{FFCE54}
+\definecolor{Sunflower}{HTML}{F6BB42}
+\definecolor{grass}{HTML}{A0D468}
+\definecolor{Grass}{HTML}{8CC152}
+\definecolor{mint}{HTML}{48CFAD}
+\definecolor{Mint}{HTML}{37BC9B}
+\definecolor{aqua}{HTML}{4FC1E9}
+\definecolor{Aqua}{HTML}{3BAFDA}
+\definecolor{jeans}{HTML}{5D9CEC}
+\definecolor{Jeans}{HTML}{4A89DC}
+\definecolor{lavender}{HTML}{AC92EC}
+\definecolor{Lavender}{HTML}{967ADC}
+\definecolor{rose}{HTML}{EC87C0}
+\definecolor{Rose}{HTML}{D770AD}
+\definecolor{lightgrey}{HTML}{F5F7FA}
+\definecolor{LightGrey}{HTML}{E6E9ED}
+\definecolor{mediumgrey}{HTML}{CCD1D9}
+\definecolor{MediumGrey}{HTML}{AAB2BD}
+\definecolor{darkgrey}{HTML}{656D78}
+\definecolor{DarkGrey}{HTML}{434A54}
+
+% BIBLIOGRAPHY STYLE
+\bibliographystyle{ieeetr}
+
+% LINKS SETTINGS
+\usepackage{url}
+\usepackage[colorlinks = true,
+            linkcolor = black,
+            urlcolor  = black,
+            citecolor = black,
+            anchorcolor = black]{hyperref}
+
+% FOOTER HEIGH
+\setlength{\footskip}{3cm}            		
+\setlength{\skip\footins}{0.5cm}
+
+% PACKAGES FOR PICTURES AND TABLES
+\usepackage{booktabs}
+\usepackage{graphicx} 
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tabularx}
+
+% TO USE ALL CARACTERS OF THE KEYBOARD
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
+
+% FRENCH AND ENGLISH
+\usepackage[francais, english]{babel}
+
+% LISTING FOR CODING
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Fichier}% Listing -> Algorithm
+\renewcommand{\lstlistlistingname}{Liste des \lstlistingname s}% List of Listings -> List of Algorithms
+
+\lstset{%
+		tabsize=2,
+		extendedchars=true,
+		basicstyle=\footnotesize\ttfamily,
+		breaklines=true,
+		numbers=left, 
+		numberstyle=\tiny, 
+		stepnumber=1,
+		backgroundcolor=\color{white},
+		commentstyle=\color{MediumGrey},
+		keywordstyle=\color{Jeans},
+		stringstyle=\color{Sunflower},
+		inputencoding=utf8,
+            	extendedchars=true,
+            	literate=%
+            	{é}{{\'{e}}}1
+            	{è}{{\`{e}}}1
+            	{ê}{{\^{e}}}1
+    	        {ë}{{\¨{e}}}1
+        	{û}{{\^{u}}}1
+        	{ù}{{\`{u}}}1
+		{â}{{\^{a}}}1
+		{à}{{\`{a}}}1
+		{î}{{\^{i}}}1
+		{ô}{{\^{o}}}1
+		{ç}{{\c{c}}}1
+		{Ç}{{\c{C}}}1
+		{É}{{\'{E}}}1
+		{Ê}{{\^{E}}}1
+		{À}{{\`{A}}}1
+		{Â}{{\^{A}}}1
+		{Î}{{\^{I}}}1
+}
+
+% INFOS
+\title{Extraction de motifs communs à plusieurs séquences biologiques}
+\author{Victor Gaborit \& Clara Jégousse}
+\date{}
+
+% BEGIN DOCUMENT
+\begin{document}
+
+% LANGUE FRANCAISE
+\selectlanguage{french}
+
+\maketitle
+
+% TABLE DES MATIERES
+\setcounter{tocdepth}{3}
+\tableofcontents
+
+\part*{Rapport}
+
+\section{Introduction} 
+
+\section{Structures de données} 
+
+\section{Tests}
+
+\section{Bilan}
+
+\section{Limites et améliorations}  
+
+\part*{Code source}
+
+\lstinputlisting[language=C, caption={Programme principal main.c}]{main.c}
+\lstinputlisting[language=C, caption={fonctions.c}]{fonctions.c}
+
+
+\end{document}
