@@ -14,19 +14,17 @@ void Lecture_Fichier_Sequences(FILE* fp, TTabSeq** tab_seq);
 
 TTabSeq* Alloue_TTabSeq();
 
-void Affiche_TTabSeq(TTabSeq** tab_seq, int nb_seq);
+TPMotif Alloue_TMotif();
 
-TMotif* Alloue_TMotif();
+TPSequence Alloue_TSequence();
 
-TSequence* Alloue_TSequence();
-
-TOccurrence* Alloue_TOccurrence();
-
-void Affiche_Un_Motif(TMotif* m);
+TPOccurrence Alloue_TOccurrence();
 
 TMotif* Creer_Un_Motif_T1(char c, int longueur_motif);
 
-void Affiche_Dictionnaire_Motifs(TMotif* tete_motif);
+void Affiche_Dictionnaire_Motifs(TPMotif tete_motif, int nb_seq);
+
+void Affiche_Occurrences_D_Un_Motif(TPMotif tete_motif, char* motif_recherche);
 
 bool existe_motif(TPMotif tete_motif, char* chaine, TPMotif* adr_prec_motif);
 
@@ -56,4 +54,4 @@ void Destruction_dictionnaire(TPMotif* adr_tete_motif);
 
 void Creer_Dictionnaire_Motif_vide(TPMotif* adr_tete_motif, TTabSeq** tab_seq, int nb_seq, int nb_erreurs);
 
-void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_seq, int taille_max_motif, int nb_max_erreurs, float quorum);
+void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TDict* adr_dict, TTabSeq** tab_seq, int nb_seq, int taille_max_motif, int nb_max_erreurs, float quorum);
