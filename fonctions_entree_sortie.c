@@ -9,9 +9,17 @@
 /* librairies */
 #include "structures.c"
 
+/* Definition des constantes */
+#define MATCH 0
+#define SUBST 1
+#define INS 2
+#define DEL 3
 
-/*------------------------------------------------------------------------------------------------------------*/
+	/*-------------------------------------*/
+	/*---FONCTIONS DE LECTURE DE FICHIER---*/
+	/*-------------------------------------*/
 
+/*---Fonction de saisie utilisateur pour le nom du fichier de séquences---*/
 char* Saisie_Mot()
 {
 
@@ -35,8 +43,9 @@ char* Saisie_Mot()
 	return mot; /* On retourne le pointeur qui nous dirige vers la premiere lettre du mot */
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------*/
 
+/*--Fonction qui va récupérer chaque ligne du fichier de séquences---*/
 char* Recuperer_Ligne(char* ligne)
 {
 	char* mot = NULL;
@@ -56,8 +65,9 @@ char* Recuperer_Ligne(char* ligne)
 	return mot; 
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------*/
 
+/*---Fonction qui permet de récupérer un caractère et de le transformer en chaine de caractères---*/
 char* Recuperer_Char(char carac)
 {
 	char* caract_voulu = NULL;
@@ -77,29 +87,27 @@ char* Recuperer_Char(char carac)
 	return caract_voulu; // On retourne le pointeur qui nous dirige vers la premiere lettre du mot
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------*/
 
+/*---Fonction de lecture de fichier---*/
 FILE* Ouvrir_Fichier()
 {
 	char* nom_fichier;
 	FILE* fp;
 	puts("Veuillez spécifier un fichier de séquences nucléotidiques (format fasta):");
 	nom_fichier=Saisie_Mot();
-
-    if((fp = fopen(nom_fichier, "r")) == NULL)
-    {
-    	puts("Erreur d'ouverture du fichier: fichier inexistant ou droits insuffisants.");
-    	exit(1);
-    }
-    else
-    {
-    	return fp;
-    }
+	while((fp = fopen(nom_fichier, "r")) == NULL)
+	{
+			puts("Fichier inexistant ou droits insuffisants,");
+			puts("Veuillez spécifier un nouveau nom de fichier de séquences nucléotidiques (format fasta):");
+			nom_fichier=Saisie_Mot();
+	}
+	return fp;
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------*/
 
-/* fonction pour charger et ouvrir un fichier texte fasta */
+/*---Fonction qui va renvoyer le nombre de séquences contenues dans le fichier---*/
 int Compte_Nb_Seq(FILE* fp)
 {
 	int nb_seq = 0;
@@ -130,14 +138,14 @@ int Compte_Nb_Seq(FILE* fp)
     return nb_seq;
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------*/
 
-/* fonction pour charger et ouvrir un fichier texte fasta */
+/*---Fonction qui va lie le fichier ligne par ligne et récuperer les informations contenues---*/
 void Lecture_Fichier_Sequences(FILE* fp, TTabSeq** tab_seq)
 {
 	int nb_seq = 0;
 	int longueur_ligne;
-    char ligne[500]; /* une chaine de 500 caractères */
+    char ligne[500]; /* une chaine de 500 caractères max */
 	/* remettre le curseur au début du fichier texte */
 	fseek(fp, 0, SEEK_SET);
 	/* tant qu'on est pas à la fin du fichier */
@@ -162,7 +170,9 @@ void Lecture_Fichier_Sequences(FILE* fp, TTabSeq** tab_seq)
     
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+	/*------------------------------------*/
+	/*---FONCTIONS D'ALLOCATION MEMOIRE---*/
+	/*------------------------------------*/
 
 TTabSeq* Alloue_TTabSeq()
 {
@@ -179,21 +189,9 @@ TTabSeq* Alloue_TTabSeq()
 	return tab_seq;
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------*/
 
-void Affiche_TTabSeq(TTabSeq** tab_seq, int nb_seq)
-{
-	int i;
-	for (i = 0; i < nb_seq; ++i)
-	{
-		printf("%s \n", tab_seq[i]->identifiant_seq);
-		printf("%s\n", tab_seq[i]->sequence);
-	}
-}
-
-/*------------------------------------------------------------------------------------------------------------*/
-
-TMotif* Alloue_TMotif()
+TPMotif Alloue_TMotif()
 {
 	TMotif* m = (TMotif*)malloc(sizeof(TMotif));
 	if(m == NULL)
@@ -210,9 +208,9 @@ TMotif* Alloue_TMotif()
 	return m;
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------*/
 
-TSequence* Alloue_TSequence()
+TPSequence Alloue_TSequence()
 {
 	TSequence* seq = (TSequence*)malloc(sizeof(TSequence));
 	if(seq == NULL)
@@ -228,9 +226,9 @@ TSequence* Alloue_TSequence()
 	return seq;
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------*/
 
-TOccurrence* Alloue_TOccurrence()
+TPOccurrence Alloue_TOccurrence()
 {
 	TOccurrence* occ = (TOccurrence*)malloc(sizeof(TOccurrence));
 	if(occ == NULL)
@@ -249,20 +247,63 @@ TOccurrence* Alloue_TOccurrence()
 	return occ;
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+	/*---------------------------*/
+	/*---FONCTIONS D'AFFICHAGE---*/
+	/*---------------------------*/
 
-void Affiche_Dictionnaire_Motifs(TPMotif tete_motif)
+/*---Fonction qui permet l'affichage des motifs contenus dans le dictionnaire final---*/
+void Affiche_Dictionnaire_Motifs(TPMotif tete_motif, int nb_seq)
 {
 	puts("AFFICHAGE DICTIONNAIRE DE MOTIFS");
-	TPMotif motif_courant = Alloue_TMotif();
+	TPMotif motif_courant;
 	motif_courant = tete_motif;
 
-	while( motif_courant->next != NULL)
+	while( motif_courant != NULL)
 	{
-		printf("motif: %s ;\tnb_seq_quorum: %d.\n", motif_courant->motif, motif_courant->nb_seq_quorum);
+		printf("motif: %s ;\tnb_seq_quorum: %f.\n", motif_courant->motif, (motif_courant->nb_seq_quorum/nb_seq));
 		motif_courant = motif_courant->next;
 	}
-	printf("motif: %s ;\tnb_seq_quorum: %d.\n", motif_courant->motif, motif_courant->nb_seq_quorum);
+}
+
+/*-------------------------------------*/
+
+/*---Fonctions d'affichage des occurrences d'un motif sélectionné---*/
+void Affiche_Occurrences_D_Un_Motif(TPMotif tete_motif, char* motif_recherche)
+{
+	TPMotif motif_lu = tete_motif;
+	TPSequence sequence_lu;
+	TPOccurrence occ_lu;
+	bool trouve = false;
+	while(motif_lu != NULL)
+	{
+		if(strcmp(motif_lu->motif, motif_recherche) == 0)
+		{
+			trouve = true;
+			sequence_lu = motif_lu->tete_seq;
+			while(sequence_lu != NULL)
+			{
+				occ_lu = sequence_lu->tete_occ;
+				while(occ_lu != NULL)
+				{
+					printf("Numero de sequence : %d.\n", sequence_lu->num_seq);
+					printf("Position dans la séquence : %d.\n", occ_lu->pos);
+					puts("Nombre d'erreurs :");
+					printf("\t%d substitutions.\n", occ_lu->nb_sub);
+					printf("\t%d insertions.\n", occ_lu->nb_ins);
+					printf("\t%d deletions.\n\n", occ_lu->nb_del);
+					puts("++++++++++++++++++++++++++++++++++++\n");
+					occ_lu = occ_lu->next;
+				}
+				sequence_lu = sequence_lu->next;
+			}
+			return;
+		}
+		motif_lu = motif_lu->next;
+	}
+	if(!trouve)
+	{
+		puts("Le motif saisi n'a pas été trouvé dans le dictionnaire...");
+	}
 }
 
 /*------------------------------------------------------------------------------------------------------------*/
@@ -442,26 +483,26 @@ void Inserer_Une_Occurrence(TPOccurrence* adr_tete_occ, int occ, TPOccurrence pr
 		new_occ->pos = occ;
 		switch(operation)
 		{
-			case 0 : /* 0 pour un match */
-				new_occ->last = 0;
+			case MATCH : /* 0 pour un match */
+				new_occ->last = MATCH;
 				new_occ->nb_ins = num_ins;
 				new_occ->nb_del = num_del;
 				new_occ->nb_sub = num_sub;
 				break;
-			case 1 : /* 1 pour une substitution */
-				new_occ->last = 1;
+			case SUBST : /* 1 pour une substitution */
+				new_occ->last = SUBST;
 				new_occ->nb_ins = num_ins;
 				new_occ->nb_del = num_del;
 				new_occ->nb_sub = num_sub+1;
 				break;
-			case 2 : /* 2 pour une insertion */
-				new_occ->last = 2;
+			case INS : /* 2 pour une insertion */
+				new_occ->last = INS;
 				new_occ->nb_ins = num_ins+1;
 				new_occ->nb_del = num_del;
 				new_occ->nb_sub = num_sub;
 				break;
-			case 3 : /* 3 pour une deletion */
-				new_occ->last = 3;
+			case DEL : /* 3 pour une deletion */
+				new_occ->last = DEL;
 				new_occ->nb_ins = num_ins;
 				new_occ->nb_del = num_del+1;
 				new_occ->nb_sub = num_sub;
@@ -477,26 +518,26 @@ void Inserer_Une_Occurrence(TPOccurrence* adr_tete_occ, int occ, TPOccurrence pr
 	new_occ->pos = occ;
 	switch(operation)
 	{
-		case 0 : /* 0 pour un match */
-			new_occ->last = 0;
+		case MATCH : /* 0 pour un match */
+			new_occ->last = MATCH;
 			new_occ->nb_ins = num_ins;
 			new_occ->nb_del = num_del;
 			new_occ->nb_sub = num_sub;
 			break;
-		case 1 : /* 1 pour une substitution */
-			new_occ->last = 1;
+		case SUBST : /* 1 pour une substitution */
+			new_occ->last = SUBST;
 			new_occ->nb_ins = num_ins;
 			new_occ->nb_del = num_del;
 			new_occ->nb_sub = num_sub+1;
 			break;
-		case 2 : /* 2 pour une insertion */
-			new_occ->last = 2;
+		case INS : /* 2 pour une insertion */
+			new_occ->last = INS;
 			new_occ->nb_ins = num_ins+1;
 			new_occ->nb_del = num_del;
 			new_occ->nb_sub = num_sub;
 			break;
-		case 3 : /* 3 pour une deletion */
-			new_occ->last = 3;
+		case DEL : /* 3 pour une deletion */
+			new_occ->last = DEL;
 			new_occ->nb_ins = num_ins;
 			new_occ->nb_del = num_del+1;
 			new_occ->nb_sub = num_sub;
@@ -621,7 +662,6 @@ void Destruction_dictionnaire(TPMotif* adr_tete_motif)
 
 void Creer_Dictionnaire_Motif_vide(TPMotif* adr_tete_motif, TTabSeq** tab_seq, int nb_seq, int nb_erreurs)
 {
-	puts("Création du dictionnaire des motifs de taille vide...");
 	/* Déclaration des variables */
 	
 	int i, j, k; /* indices */
@@ -650,51 +690,32 @@ void Creer_Dictionnaire_Motif_vide(TPMotif* adr_tete_motif, TTabSeq** tab_seq, i
 			if(prec_seq == NULL) // cas ou la premiere sequence vient tout juste d'etre inserée
 			{
 				deplace_prec_occ(motif_vide->tete_seq->tete_occ, &prec_occ);
-				Inserer_Une_Occurrence(&motif_vide->tete_seq->tete_occ, j+1, prec_occ,0 , 0, 0, 0);
+				Inserer_Une_Occurrence(&motif_vide->tete_seq->tete_occ, j+1, prec_occ,MATCH , 0, 0, 0);
 				nb_max_insertions = minimum(nb_erreurs, longueur_seq-(j+1));
 				for(k = 1; k <= nb_max_insertions; k++)
 				{
 					deplace_prec_occ(motif_vide->tete_seq->tete_occ, &prec_occ);
-					Inserer_Une_Occurrence(&motif_vide->tete_seq->tete_occ, j+1, prec_occ,2 , 0, k-1, 0); /* k-1 pour éviter de compter une insertion de trop lors de la création du motif vide */
+					Inserer_Une_Occurrence(&motif_vide->tete_seq->tete_occ, j+1, prec_occ,INS , 0, k-1, 0); /* k-1 pour éviter de compter une insertion de trop lors de la création du motif vide */
 				}
 			}
 			else
 			{
 				deplace_prec_occ(prec_seq->next->tete_occ, &prec_occ);
-				Inserer_Une_Occurrence(&prec_seq->next->tete_occ, j+1, prec_occ,0 , 0, 0, 0);
+				Inserer_Une_Occurrence(&prec_seq->next->tete_occ, j+1, prec_occ,MATCH , 0, 0, 0);
 				nb_max_insertions = minimum(nb_erreurs, longueur_seq-(j+1));
 				for(k = 1; k <= nb_max_insertions; k++)
 				{
 					deplace_prec_occ(prec_seq->next->tete_occ, &prec_occ);
-					Inserer_Une_Occurrence(&prec_seq->next->tete_occ, j+1, prec_occ,2 , 0, k-1, 0);
+					Inserer_Une_Occurrence(&prec_seq->next->tete_occ, j+1, prec_occ,INS , 0, k-1, 0);
 				}
 			}
 		}
 	}
-	/*test_seq = motif_vide->tete_seq;
-	while(test_seq != NULL)
-	{
-		puts("================================================================");
-		printf("la sequences insérée est la numero : %d\n", test_seq->num_seq);
-		test_occ = test_seq->tete_occ;
-		while(test_occ != NULL)
-		{
-			puts("++++++++++++++++++++++++++++++++++++++++++++++++++++");
-			printf("l'occurrence insérée est a la position : %d\n", test_occ->pos);
-			printf("l'operation effectuée est : %d\n", test_occ->last);
-			printf("le nombre d'insertion est de : %d\n", test_occ->nb_ins);
-			puts("++++++++++++++++++++++++++++++++++++++++++++++++++++");
-			test_occ = test_occ->next;
-		}
-		test_seq = test_seq->next;
-		puts("================================================================");
-	}*/
-	puts("Dictionnaire des motifs de taille vide crée...");
 }
 
 /*------------------------------------------------------------------------------------------------------------*/
 
-void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_seq, int taille_max_motif, int nb_max_erreurs, float quorum)
+void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TDict* adr_dict, TTabSeq** tab_seq, int nb_seq, int taille_max_motif, int nb_max_erreurs, float quorum)
 {
 	
 	/* Déclaration des variables */
@@ -709,32 +730,29 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 	char* motif_a_inserer;
 	char* precedent_motif;
 	char alphabet[4] = {'A','C','G','T'};
-	TDict dict_courant;
 	TDict dict_a_construire;
 	dict_a_construire.tete_motif = NULL;
-	dict_courant.tete_motif = NULL;
-	TPMotif motif_lu = Alloue_TMotif();
+	TPMotif motif_lu;
 	TPMotif prec_motif;
-	TPMotif ancien_motif = Alloue_TMotif();
-	TPMotif motif_a_supprimer = Alloue_TMotif();
+	TPMotif ancien_motif;
+	TPMotif motif_a_supprimer;
 	TPMotif motif_a_afficher;
 	TPSequence sequence_a_afficher;
 	TPOccurrence occ_a_afficher;
-	TPSequence sequence_lu = Alloue_TSequence();
+	TPSequence sequence_lu;
 	TPSequence prec_seq;
-	TPOccurrence occurrence_lu = Alloue_TOccurrence();
+	TPOccurrence occurrence_lu;
 	TPOccurrence prec_occ;
 	bool presence_motif;
 	bool presence_sequence;
 	bool match_possible;
 	
 	/* Construction du dictionnaire des motifs de taille vide */
-	Creer_Dictionnaire_Motif_vide(&dict_courant.tete_motif, tab_seq, nb_seq, nb_max_erreurs);
+	Creer_Dictionnaire_Motif_vide(&adr_dict->tete_motif, tab_seq, nb_seq, nb_max_erreurs);
 	/* Debut de la boucle allant de la taille de motif 0 a la taille du motif final désiré */
 	for(i = 0; i < taille_max_motif; i++)
 	{
-		//printf("Le dictionnaire qui est lu comporte des motifs de taille : %d\n", i);
-		motif_lu = dict_courant.tete_motif;
+		motif_lu = adr_dict->tete_motif;
 		
 		/* On parcours les motifs contenus dans le dictionnaire i-1 */
 		while(motif_lu != NULL)
@@ -756,7 +774,9 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 						 /* On est à la fin de la séquence on met la valeur de -1 pour indiquer plus tard que l'on ne peut pas effectuer d'operation */
 						pos_car_droite = -1;
 					}
-					
+					//printf("num_seq: %d\n", sequence_lu->num_seq);
+					//printf("pos seq : %d\n", pos_car_droite);
+					//printf("car courant : %c\n", tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-1]);
 					/* Calcul du nombre d'erreurs deja prises en compte pour l'occurrence que l'on est en train de lire */
 					
 					nb_erreurs_actuel = occurrence_lu->nb_sub + occurrence_lu->nb_ins + occurrence_lu->nb_del;
@@ -764,13 +784,12 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 					/* Cas de la substitution */
 					switch(occurrence_lu->last)
 					{
-						case 0:
-						case 1:
+						case MATCH:
 							if((pos_car_droite != -1) && (nb_erreurs_actuel < nb_max_erreurs))
 							{
 								for(k = 0; k < 4; k++)
 								{
-									if(alphabet[k] != tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite])
+									if(alphabet[k] != tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-1])
 									{
 										base_courante = Recuperer_Char(alphabet[k]);
 										precedent_motif = (char*)malloc((strlen(motif_lu->motif)+1)*sizeof(char));
@@ -779,7 +798,7 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 										motif_a_inserer = strcat(precedent_motif, base_courante);
 										if(!existe(dict_a_construire, motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, &prec_motif, &prec_seq, &prec_occ, &presence_sequence, &presence_motif))
 										{
-											Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, 1); /* dernier paramètre pour préciser l'operation que l'on effectue */
+											Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, SUBST);
 										}
 										else
 										{
@@ -789,12 +808,13 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 								}
 							}
 						break;
-						case 2: 
+						case SUBST:
+						case INS: // Si le last est une substitution ou une insertion
 							if((pos_car_droite != -1) && (nb_erreurs_actuel < nb_max_erreurs))
 							{
 								for(k = 0; k < 4; k++)
 								{
-									if((alphabet[k] != tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite]) && (alphabet[k] != tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-1]))
+									if((alphabet[k] != tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-1]) && (alphabet[k] != tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-2]))
 									{
 										base_courante = Recuperer_Char(alphabet[k]);
 										precedent_motif = (char*)malloc((strlen(motif_lu->motif)+1)*sizeof(char));
@@ -803,7 +823,7 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 										motif_a_inserer = strcat(precedent_motif, base_courante);
 										if(!existe(dict_a_construire, motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, &prec_motif, &prec_seq, &prec_occ, &presence_sequence, &presence_motif))
 										{
-											Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, 1);
+											Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif, motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, SUBST);
 										}
 										else
 										{
@@ -818,8 +838,32 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 					/* Cas de la deletion? */
 					switch(occurrence_lu->last)
 					{
-						case 0 :
-						case 1 :
+						case MATCH :
+						case SUBST :
+							if(nb_erreurs_actuel < nb_max_erreurs)
+							{
+								for(k = 0; k < 4; k++)
+								{
+									if(alphabet[k] != tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-2])
+									{
+										base_courante = Recuperer_Char(alphabet[k]);
+										precedent_motif = (char*)malloc((strlen(motif_lu->motif)+1)*sizeof(char));
+										strcpy(precedent_motif, motif_lu->motif);
+										motif_a_inserer = (char*)malloc((i+1)*sizeof(char));
+										motif_a_inserer = strcat(precedent_motif, base_courante);
+										if(!existe(dict_a_construire, motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, &prec_motif, &prec_seq, &prec_occ, &presence_sequence, &presence_motif))
+										{
+											Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, DEL);
+										}
+										else
+										{
+											puts("Erreur : L'occurrence existe deja dans le nouveau dictionnaire ce qui ne devrait pas être le cas");
+										}
+									}
+								}
+							}
+						break;
+						case DEL :
 							if(nb_erreurs_actuel < nb_max_erreurs)
 							{
 								for(k = 0; k < 4; k++)
@@ -833,31 +877,7 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 										motif_a_inserer = strcat(precedent_motif, base_courante);
 										if(!existe(dict_a_construire, motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, &prec_motif, &prec_seq, &prec_occ, &presence_sequence, &presence_motif))
 										{
-											Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, 3);
-										}
-										else
-										{
-											puts("Erreur : L'occurrence existe deja dans le nouveau dictionnaire ce qui ne devrait pas être le cas");
-										}
-									}
-								}
-							}
-						break;
-						case 3 :
-							if(nb_erreurs_actuel < nb_max_erreurs)
-							{
-								for(k = 0; k < 4; k++)
-								{
-									if(alphabet[k] != tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite])
-									{
-										base_courante = Recuperer_Char(alphabet[k]);
-										precedent_motif = (char*)malloc((strlen(motif_lu->motif)+1)*sizeof(char));
-										strcpy(precedent_motif, motif_lu->motif);
-										motif_a_inserer = (char*)malloc((i+1)*sizeof(char));
-										motif_a_inserer = strcat(precedent_motif, base_courante);
-										if(!existe(dict_a_construire, motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, &prec_motif, &prec_seq, &prec_occ, &presence_sequence, &presence_motif))
-										{
-											Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, 3);
+											Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, DEL);
 										}
 										else
 										{
@@ -880,7 +900,7 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 						occurrence_lu = occurrence_lu->next;
 						continue;
 					}
-					if((occurrence_lu->last == 2) && (tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite] == tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-1]))
+					if((occurrence_lu->last == INS) && (tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-1] == tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-2]))
 					{					
 						occurrence_lu = occurrence_lu->next;
 						continue;
@@ -892,7 +912,7 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 					motif_a_inserer = strcat(precedent_motif, base_courante);
 					if(!existe(dict_a_construire, motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, &prec_motif, &prec_seq, &prec_occ, &presence_sequence, &presence_motif))
 					{
-						Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, 0);
+						Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, MATCH);
 					}
 					else
 					{
@@ -905,7 +925,6 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 						occurrence_lu = occurrence_lu->next;
 						continue;
 					}
-					pos_car_droite++;
 					if(pos_car_droite == strlen(tab_seq[sequence_lu->num_seq-1]->sequence)) /* sequence_lu->num_seq-1 = indice de la séquence considérée en C */
 					{
 						pos_car_droite = -1; /* On est à la fin de la séquence il n'y a plus rien a faire */
@@ -920,14 +939,14 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 					nb_max_insertion=minimum(nb_max_insertion, nb_caracteres_disponibles_a_droite);
 					for(l = 1; l <= nb_max_insertion; l++)
 					{
-						base_courante = Recuperer_Char(tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite]);
+						base_courante = Recuperer_Char(tab_seq[sequence_lu->num_seq-1]->sequence[pos_car_droite-1]);
 						precedent_motif = (char*)malloc((strlen(motif_lu->motif)+1)*sizeof(char));
 						strcpy(precedent_motif, motif_lu->motif);
 						motif_a_inserer = (char*)malloc((i+1)*sizeof(char));
 						motif_a_inserer = strcat(precedent_motif, base_courante);
 						if(!existe(dict_a_construire, motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, &prec_motif, &prec_seq, &prec_occ, &presence_sequence, &presence_motif))
 						{
-							Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, 2);
+							Creer_Nouvelle_Occurrence(&dict_a_construire.tete_motif , motif_a_inserer, sequence_lu->num_seq, occurrence_lu->pos, presence_motif, presence_sequence, prec_motif, prec_seq, prec_occ, occurrence_lu, INS);
 						}
 						else
 						{
@@ -944,67 +963,35 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TTabSeq** tab_seq, int nb_
 		
 		/* Destruction du dictionnaire de taille i-1 */
 		
-		Destruction_dictionnaire(&dict_courant.tete_motif);
-		dict_courant.tete_motif = dict_a_construire.tete_motif;
-		dict_a_construire.tete_motif = NULL;
+		Destruction_dictionnaire(&adr_dict->tete_motif);
+		adr_dict->tete_motif = dict_a_construire.tete_motif;
+		dict_a_construire.tete_motif = NULL;	
+		
 		
 		/* On regarde pour chaque motif si la contrainte du quorum est respectée, si ce n'est pas le cas, les occurrences, séquences et ce motif sont supprimés du dictionnaire */
-		//puts("Verification de la contrainte du quorum");
-		motif_lu = dict_courant.tete_motif;
-		ancien_motif = dict_courant.tete_motif;
+		motif_lu = adr_dict->tete_motif;
+		ancien_motif = adr_dict->tete_motif;
 		cpt = 0;
 		while(motif_lu != NULL)
 		{
-			printf("quorum examiné : %f\n", motif_lu->nb_seq_quorum/nb_seq);
 			if((motif_lu->nb_seq_quorum/nb_seq) < quorum)
 			{
-				puts("le motif est a supprimer");
 				ancien_motif->next = motif_lu->next;
 				motif_a_supprimer = motif_lu;
 				if( cpt == 0)
 				{
-					dict_courant.tete_motif = ancien_motif->next;
+					adr_dict->tete_motif = ancien_motif->next;
 				}
 				motif_lu = ancien_motif->next;
 				Free_liste_sequence(&motif_a_supprimer->tete_seq);
 				free(motif_a_supprimer);
 				continue;
 			}
-			puts("on garde le motif");
 			ancien_motif = motif_lu;
 			motif_lu = motif_lu->next;
 			cpt++;
 		}		
 		
-	}
-	motif_a_afficher = dict_courant.tete_motif;
-	while(motif_a_afficher != NULL)
-	{
-		puts("================================================================");
-		printf("Premier motif trouvé : %s\n", motif_a_afficher->motif);
-		printf("Quorum de ce motif : %f\n",(motif_a_afficher->nb_seq_quorum/nb_seq));
-		sequence_a_afficher = motif_a_afficher->tete_seq;
-		while(sequence_a_afficher != NULL)
-		{
-			puts("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-			printf("la sequences insérée est la numero : %d\n", sequence_a_afficher->num_seq);
-			occ_a_afficher = sequence_a_afficher->tete_occ;
-			while(occ_a_afficher != NULL)
-			{
-				puts("------------------------------------------------------");
-				printf("l'occurrence insérée est a la position : %d\n", occ_a_afficher->pos);
-				printf("l'operation effectuée est : %d\n", occ_a_afficher->last);
-				printf("le nombre d'insertion est de : %d\n", occ_a_afficher->nb_ins);
-				printf("Le nombre de substitution est de  : %d\n", occ_a_afficher->nb_sub);
-				printf("Le nombre de deletion est de  : %d\n", occ_a_afficher->nb_del);
-				puts("------------------------------------------------------");
-				occ_a_afficher = occ_a_afficher->next;
-			}
-			sequence_a_afficher = sequence_a_afficher->next;
-			puts("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-		}
-		motif_a_afficher = motif_a_afficher->next;
-		puts("================================================================");
 	}
 }
 
