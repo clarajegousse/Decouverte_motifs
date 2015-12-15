@@ -1102,7 +1102,7 @@ void Decouvert_Exacte_Motif_Occurrences_Subst_Ins_Del(TDict* adr_dict, TTabSeq**
 		cpt = 0;
 		while(motif_lu != NULL)
 		{
-			if((motif_lu->nb_seq_quorum/nb_seq) < quorum)
+			if((motif_lu->nb_seq_quorum/nb_seq) <= quorum)
 			{
 				ancien_motif->next = motif_lu->next;
 				motif_a_supprimer = motif_lu;
