@@ -134,29 +134,27 @@
 
 \section{Structures de données} 
 
+
 % structures de données utilisées: schéma
 \begin{figure}[h!]
-\begin{subfigure}{\textwidth}
-  \centering
-  \includegraphics[width=0.7\textwidth]{SchemaTTabSeq.png}
-  \caption{Structure de données pour contenir les séquences du fichier fasta.}
-  \label{fig:sfig1}
-\end{subfigure}%
-
-\begin{subfigure}{\textwidth}
-  \centering
-  \includegraphics[width=0.8\textwidth]{Schema.png}
-  \caption{Structure du données du dictionnaire de motifs}
-  \label{fig:sfig3}
-\end{subfigure}
+\centering
+  \includegraphics[width=\textwidth]{SchemaTTabSeq.png}
 \caption{Schémas des structures de données}
-\label{fig:Superposition_ligands_4kzk_2xom_4asl_4f8l}
+\label{fig:structure_donnees_dictionnaire}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=\textwidth]{Schema.png}
+\caption{Schémas des structures de données}
+\label{fig:structure_donnees_dictionnaire}
 \end{figure}
 \newpage
 
 \section{Tests}
 
 % tests réalisés
+%\lstinputlisting[language=, caption={structures.c}]{structures.c}
 
 \section{Bilan}
 
@@ -165,7 +163,7 @@
 Le programme rempli les critères suivant:
 \begin{itemize}
 \item lecture des séquences nucléiques à partir d'un fichier texte et mémorisation de ces séquences dans une liste dynamique;
-\item creation d'une structure de données "dictionnaire" pour stocker la liste des motifs;
+\item création d'une structure de données "dictionnaire" pour stocker la liste des motifs;
 \item demande en boucle d'un nom de fichier de séquences à l'utilisateur;
 \item demande des paramètres : longueur du(des) motif(s) commun(s) à extraire, nombre maximum d'erreurs autorisé entre occurrence et motif, et valer du quorum;
 \item affichage de la liste des motifs qui vérifient le quorum;
@@ -182,5 +180,7 @@ Le programme rempli les critères suivant:
 \lstinputlisting[language=C, caption={Programme principal main.c}]{main.c}
 \lstinputlisting[language=C, caption={fonctions.h}]{fonctions.h}
 \lstinputlisting[language=C, caption={fonctions.c}]{fonctions.c}
+
+
 
 \end{document}
