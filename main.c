@@ -81,7 +81,8 @@ int main()
 		{
 			puts("1: Consulter les occurrences d'un motif donné.");
 			puts("2: Effectuer une nouvelle recherche.");
-			puts("3: Quitter le programme.");
+			puts("3: Sauvegarder le dictionnaire de motif crée dans un fichier texte");
+			puts("4: Quitter le programme.");
 			scanf("%d", &choix);
 			switch(choix)
 			{
@@ -91,14 +92,17 @@ int main()
 					motif_choisi = Saisie_Mot();
 					puts("++++++++++++++++++++++++++++++++++++\n");
 					Affiche_Occurrences_D_Un_Motif(dict.tete_motif, motif_choisi);
-					// TODO : Affichage des occurrences selon un motif donné
 				break;
 				case 2: 
 					Destruction_dictionnaire(&dict.tete_motif);
 					dict.tete_motif = NULL;
 					menu2 = 0;
 				break;
-				case 3: 
+				case 3:
+					puts("Sauvegarde des motifs du dictionnaire");
+					Sauvegarde_Dictionnaire_Motifs(dict.tete_motif, nb_seq);
+				break;
+				case 4: 
 					puts("Fin du programme...");
 					menu2 = 0;
 					menu1 = 0;
