@@ -1,3 +1,4 @@
 # Decouverte_motifs
-projet Algorithmique et Programmation en Language C
-TODO: décrire le programme correctement.
+Projet Master 2 Bioinformatique Université de Nantes
+
+Matière: Algorithmique et Programmation en Language C
